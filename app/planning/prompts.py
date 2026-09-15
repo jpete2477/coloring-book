@@ -176,10 +176,11 @@ def render_prompt(config: BookConfig, page: PlannedPage, family_index: int, *, p
     text = " ".join(text.split())
 
     style_anchor = config.style.style_anchor or STYLE_ANCHORS[family_index % len(STYLE_ANCHORS)]
+    audience_label = (config.book.audience or "adult").lower()
     if config.book.theme:
-        text = f'Using a "{style_anchor}" style with a "{config.book.theme}" theme, create an adult coloring book image with {text}'
+        text = f'Using a "{style_anchor}" style with a "{config.book.theme}" theme, create a {audience_label} coloring book image with {text}'
     else:
-        text = f'Using a "{style_anchor}" style, create an adult coloring book image with {text}'
+        text = f'Using a "{style_anchor}" style, create a {audience_label} coloring book image with {text}'
 
     if provider == "midjourney":
         params = f"--ar {midjourney_aspect_ratio(config)} --stylize {config.style.midjourney_stylize}"

@@ -4,6 +4,19 @@
 **Status:** Proposed  
 **Primary objective:** Build a local, repeatable production system that turns a book concept into a curated set of unique, stylistically consistent adult coloring pages and a KDP-ready interior PDF, while keeping Midjourney generation within Midjourney's permitted workflow.
 
+> **Post-MVP note, from real use (see [README.md](README.md) for the current guidance):**
+> This doc uses "adult coloring book" and Midjourney throughout as the
+> running example, since that's what the first real book was. Neither
+> turned out to be load-bearing: the pipeline has no adult-specific logic —
+> `audience`/`theme`/`base_elements`/`constraints` are all just per-book
+> `book.yaml` values — and Midjourney itself turned out to be a poor fit for
+> this specific "clean, uniform-width, fully-closed-shape line art" style,
+> producing shaded/illustrated results even with tuned prompts. Gemini,
+> with this pipeline's generated prompts, worked well and is what every
+> real book has actually been generated with. The provider-agnostic design
+> called for below (a manual, non-automated generation step, output read
+> from a local folder) is exactly what made swapping providers a non-event.
+
 ---
 
 ## 1. Executive Summary

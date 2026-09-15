@@ -17,9 +17,13 @@ class BookMeta(BaseModel):
     bleed: bool = False
     author: str = ""
     audience: str = "Adult"
-    """Drives style.medium ("{audience} coloring book line art"). Only
-    "Adult" is exercised so far; a "Kids" audience would want different
-    medium wording and probably relaxed constraints, not built yet."""
+    """Drives style.medium ("{audience} coloring book line art") and the
+    wording of every generated prompt end to end - the pipeline itself isn't
+    adult-specific, "Adult" is just the default. A "Kids" (or any other)
+    audience works the same way, but its base_elements/constraints/complexity
+    are still a per-book judgment call to set in book.yaml - e.g. the
+    anxiety-reduction, no-representational-subjects reasoning in STYLE.md is
+    specific to that one adult-focused product line, not a pipeline default."""
     theme: str = ""
     """Free-text theme (e.g. "4 Seasons") used for flavor in prompts/front
     matter. Does not by itself pick base_elements - that's still a curated,

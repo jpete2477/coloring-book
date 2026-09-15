@@ -1,16 +1,34 @@
 # Book Factory
 
-A local production pipeline for generative adult coloring books: from a
-`book.yaml` definition to a KDP-ready interior PDF, with Midjourney used
-manually for artwork generation.
+A local production pipeline for generative coloring books of **any kind**:
+from a `book.yaml` definition to a KDP-ready interior PDF. Nothing in the
+pipeline is adult-specific — `audience`, `theme`, `base_elements`, and
+`constraints` are all free-form per book (see `book.yaml`/`book.json`
+below), so a kids' book or an all-ages book works exactly the same way as
+an adult one. `books/four_seasons/` and `books/ornamental_forms/` just both
+happen to be adult titles.
 
 See [`coloring_book_factory_prd.md`](coloring_book_factory_prd.md) for the
 full product spec. This implements MVP 0.1 plus perceptual-hash duplicate
-detection (PRD section 42/68).
+detection (PRD section 42/68). The PRD was written with Midjourney as the
+running example — in practice, see the note below, that's not what ended up
+working.
 
-**Midjourney is never automated.** This tool generates prompts for you to
-run manually in Midjourney's normal web/Discord interface; everything after
-you download the images is handled locally.
+**No image generation is ever automated.** This tool generates prompts for
+you to run manually in whatever tool you choose; everything after you
+download the images is handled locally.
+
+**On providers: use Gemini, not Midjourney.** The pipeline still generates
+a Midjourney-flavored prompt manifest (`--ar`/`--stylize` flags and all),
+but in real use, Midjourney's output for this specific style — clean,
+uniform-width, fully-closed-shape line art meant to be colored — was
+consistently poor, even with heavily tuned prompts; it kept drifting toward
+shaded/illustrated results that don't work as a colorable page. **Gemini,
+with the prompts this pipeline generates, produced usable line art
+reliably** and is what every real book so far has actually been generated
+with. Start with `prompts_generic.{csv,md}` (Gemini and friends); only
+bother with `prompts_midjourney.{csv,md}` if you want to experiment
+yourself.
 
 ## Setup
 
@@ -33,11 +51,12 @@ uv run bookfactory init my_book --spec book.json
 #    doesn't and gets confused by them)
 uv run bookfactory plan my_book
 uv run bookfactory prompts my_book
+#    -> books/my_book/metadata/prompts_generic.{csv,md}  (Gemini, Civitai, ... - use this one)
 #    -> books/my_book/metadata/prompts_midjourney.{csv,md}
-#    -> books/my_book/metadata/prompts_generic.{csv,md}  (Gemini, Civitai, ...)
 
-# 3. Generate the images in your chosen tool using those prompts, then
-#    download them into books/my_book/inbox/
+# 3. Generate the images in your chosen tool (Gemini is the one that's
+#    actually worked well - see the provider note above) using those
+#    prompts, then download them into books/my_book/inbox/
 
 # 4. Ingest + basic QC (dimensions, gray/color detection, duplicate hashing)
 uv run bookfactory ingest my_book
@@ -106,6 +125,15 @@ variety. `elements` is required and deliberately not auto-derived from
 element list for a theme is a judgment call worth reviewing per book, not a
 formula. `bookfactory init <id> --spec book.json` turns this into a full
 `book.yaml`.
+
+`audience` is free text (`"Adult"`, `"Kids"`, `"All Ages"`, whatever fits)
+and flows straight into every generated prompt's wording — there's no
+adult-only logic anywhere downstream of it, just per-book judgment calls
+like which `elements`/`constraints` are actually appropriate for that
+audience. `model` is likewise just a label recorded into the generated
+`book.yaml`'s comments for your own reference (`# model: Gemini`) — it
+doesn't route to a provider integration; see the provider note above for
+why `"Gemini"` is the value worth defaulting to.
 
 ## Repository layout
 
