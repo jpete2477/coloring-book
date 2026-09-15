@@ -1,0 +1,27 @@
+# Python / uv
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Env
+.env
+
+# Per-book generated artifacts (regenerable from book.yaml + the pipeline).
+# book.yaml, style/, and the prompt manifest are kept under version control.
+books/*/inbox/*
+books/*/originals/*
+books/*/candidates/*
+books/*/production/*
+books/*/previews/*
+books/*/interior/*.pdf
+books/*/cover/*
+books/*/metadata/factory.db
+books/*/metadata/factory.db-journal
+!books/*/inbox/.gitkeep
+!books/*/originals/.gitkeep
+!books/*/candidates/.gitkeep
+!books/*/production/.gitkeep
+!books/*/previews/.gitkeep
+!books/*/cover/.gitkeep

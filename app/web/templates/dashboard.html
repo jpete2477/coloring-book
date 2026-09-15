@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ book_id }} — Dashboard{% endblock %}
+{% block header_extra %}<span class="kbd">/ {{ book_id }}</span>{% endblock %}
+{% block content %}
+<h1>{{ book_id }}</h1>
+<p>
+  <a class="btn" href="/{{ book_id }}/review">Start reviewing →</a>
+  <a class="btn" href="/{{ book_id }}/pages">Review book order →</a>
+</p>
+
+<div class="stat-grid">
+  <div class="stat"><div class="value">{{ stats.target_pages }}</div><div class="label">Target pages</div></div>
+  <div class="stat"><div class="value">{{ stats.approved }}</div><div class="label">Approved</div></div>
+  <div class="stat"><div class="value">{{ stats.needs_review }}</div><div class="label">Needs review</div></div>
+  <div class="stat"><div class="value">{{ stats.rejected }}</div><div class="label">Rejected</div></div>
+  <div class="stat"><div class="value">{{ stats.generation_needed }}</div><div class="label">Generation needed</div></div>
+  <div class="stat"><div class="value">{{ stats.qc_failed }}</div><div class="label">QC failed</div></div>
+  <div class="stat"><div class="value">{{ stats.diversity_pct }}%</div><div class="label">Book diversity</div></div>
+  <div class="stat"><div class="value">{{ stats.avg_qc if stats.avg_qc is not none else "—" }}</div><div class="label">Average QC</div></div>
+  <div class="stat"><div class="value">{{ stats.duplicate_flags }}</div><div class="label">Potential duplicates</div></div>
+</div>
+{% endblock %}

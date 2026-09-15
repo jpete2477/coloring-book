@@ -1,0 +1,22 @@
+{
+    "audience": "Adult",
+    "style": "stained glass window",
+    "theme": "4 Seasons",
+    "model": "Gemini",
+    "author": "MBOQ Colors",
+    "page_count": 40,
+    "create_cover": true,
+    "border_type": "solid,black,square",
+    "size": "8.5x11",
+    "subtitle": "An Adult Coloring Collection",
+    "bleed": false,
+    "margin_width_inches": 1.0,
+    "elements": [
+        "flower", "vine", "raindrop", "bud",
+        "wave", "shell", "sunburst",
+        "leaf", "acorn", "pinecone", "wheat",
+        "snowflake", "icicle", "frost", "crystal",
+        "spiral"
+    ],
+    "notes": ""
+}

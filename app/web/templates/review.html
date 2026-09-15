@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Review {{ asset.id }}{% endblock %}
+{% block header_extra %}<a href="/{{ book_id }}">{{ book_id }}</a><span class="kbd">{{ queue_count }} left to review</span>{% endblock %}
+{% block content %}
+<div class="review-layout">
+  <div>
+    <div class="review-image">
+      {% if image_url %}<img src="{{ image_url }}" alt="{{ asset.id }}">{% else %}<p>No image</p>{% endif %}
+    </div>
+    <div class="actions">
+      <button class="approve" onclick="submitAction('approve')">[A] Approve</button>
+      <button class="reject" onclick="submitAction('reject')">[X] Reject</button>
+      <button class="regenerate" onclick="submitAction('regenerate')">[R] Regenerate</button>
+      {% if prev_id %}<a class="btn" href="/{{ book_id }}/review/{{ prev_id }}">[P] Previous</a>{% endif %}
+      {% if next_id %}<a class="btn" href="/{{ book_id }}/review/{{ next_id }}">[N] Next</a>{% endif %}
+    </div>
+    <div class="panel">
+      <h3>Scores</h3>
+      <div class="kv">
+        <dt>Quality (1-5)</dt><dd><input id="quality" type="number" min="1" max="5" value="3"></dd>
+        <dt>Complexity (1-5)</dt><dd><input id="complexity" type="number" min="1" max="5" value="3"></dd>
+        <dt>Uniqueness (1-5)</dt><dd><input id="uniqueness" type="number" min="1" max="5" value="3"></dd>
+        <dt>Notes</dt><dd><input id="notes" type="text" placeholder="rejection/regeneration reason"></dd>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <h3>Page {{ asset.id }}</h3>
+      <dl class="kv">
+        <dt>Status</dt><dd>{{ asset.status }}</dd>
+        {% if spec %}
+        <dt>Element</dt><dd>{{ spec.element }}</dd>
+        <dt>Composition</dt><dd>{{ spec.composition }}</dd>
+        <dt>Density</dt><dd>{{ spec.density }}</dd>
+        <dt>Symmetry</dt><dd>{{ spec.symmetry }}</dd>
+        <dt>Scale</dt><dd>{{ spec.scale }}</dd>
+        <dt>Border</dt><dd>{{ spec.border }}</dd>
+        {% endif %}
+      </dl>
+      {% if spec and spec.prompt %}
+      <p><small>{{ spec.prompt }}</small></p>
+      {% endif %}
+    </div>
+
+    {% if unassigned %}
+    <div class="panel">
+      <h3>Assign to a planned page</h3>
+      <form method="post" action="/{{ book_id }}/api/assets/{{ asset.id }}/assign">
+        <select name="page_spec_id">
+          {% for s in all_specs %}
+          <option value="{{ s.id }}">{{ s.id }} — {{ s.element }} / {{ s.composition }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Assign</button>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="panel">
+      <h3>QC</h3>
+      {% if qc %}
+      <dl class="kv">
+        <dt>Overall</dt><dd>{{ qc.overall_score }}</dd>
+        <dt>Resolution</dt><dd>{{ qc.resolution_score }}</dd>
+        <dt>Black fill</dt><dd>{{ qc.black_fill_score }}</dd>
+        <dt>Gray detected</dt><dd>{{ "yes" if qc.gray_detected else "no" }}</dd>
+        <dt>Color detected</dt><dd>{{ "yes" if qc.color_detected else "no" }}</dd>
+        <dt>Decision</dt><dd>{{ qc.machine_decision }}</dd>
+      </dl>
+      {% if qc.notes %}<p class="warn-list">{{ qc.notes }}</p>{% endif %}
+      {% else %}
+      <p>No QC result yet.</p>
+      {% endif %}
+    </div>
+
+    {% if similar %}
+    <div class="panel">
+      <h3>Duplicate risk</h3>
+      <ul class="warn-list">
+        {% for asset_id, distance in similar %}
+        <li>Likely similar to {{ asset_id }} (distance {{ distance }})</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/review.js"
+        data-book-id="{{ book_id }}"
+        data-asset-id="{{ asset.id }}"
+        data-prev-id="{{ prev_id or '' }}"
+        data-next-id="{{ next_id or '' }}"></script>
+{% endblock %}

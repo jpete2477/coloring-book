@@ -1,0 +1,123 @@
+book:
+  id: ornamental_forms
+  title: "Ornamental Forms"
+  author: "MBOQ Colors"
+  trim_size: "8.5x11"
+  orientation: portrait
+  target_pages: 40
+  bleed: false
+
+style:
+  style_reference: null  # set after picking early Midjourney favorites (PRD 12.1/12.2)
+  style_weight: 150
+  medium: "adult coloring book line art"
+  # Reworked repeatedly after ribbon attempts. Kept deliberately short now -
+  # Midjourney adjusts/truncates long prompts ("Long Prompt" warning), which
+  # was undermining the very fixes being added. Each concept below is stated
+  # once, not repeated in different words: bold uniform outlines (vs. the
+  # fine internal hatching we saw), fully closed shapes (open-ended lines
+  # leave nothing for a colorer to fill - the most recent, most important
+  # miss), and no hatching/texture.
+  line_style: "bold uniform-width black outlines, every shape fully closed with no open or dangling line ends, no hatching or texture linework"
+  background: "pure white background, no texture or noise"
+  complexity: "high"
+  # OF001-001 (honeycomb) came back heavily shaded/faceted and kaleidoscope-like
+  # despite "no shading"/"no gradients" text constraints. Lowering stylize and
+  # using --style raw pushes Midjourney to follow the literal prompt instead of
+  # its default aesthetic embellishment, which is what was actually overriding
+  # those constraints. A second honeycomb attempt confirmed the shading fix
+  # worked, but density still came back packed edge-to-edge despite "moderate"
+  # in the prompt - honeycomb is conceptually a tight cellular tessellation, so
+  # it was dropped from base_elements entirely rather than fought further.
+  midjourney_stylize: 50
+  midjourney_style_raw: true
+
+base_elements:
+  # Kept deliberately abstract/ornamental (no "correct" real-world reference
+  # to compare against) for an anxiety-reduction coloring book. Representational
+  # subjects with a strong mental reference image (bird, butterfly, fish,
+  # dragonfly, beetle, mushroom, feather, star, sun) were dropped after
+  # OF001-001 (bird) drifted into a realistic, shaded portrait instead of
+  # abstract pattern line art. "window" dropped too: came back dense,
+  # edge-to-edge architectural tracery on both Midjourney and Gemini - same
+  # "conceptually ornate" problem as honeycomb, confirmed across two tools.
+  # "compass" dropped too: 2/2 Gemini generations rendered actual degree
+  # numbers and N/S/E/W letters as a literal navigational instrument,
+  # violating "no text, no numbers" - our QC has no OCR/text detection, so a
+  # human caught this, not the pipeline.
+  - flower
+  - wheel
+  - shell
+  - leaf
+  - ribbon
+  - crystal
+  - pinecone
+  - spiral
+  - gear
+  - fan
+  - lattice
+  - vine
+  - arch
+  - key
+  - wave
+
+compositions:
+  # "four_way_tile" dropped: tiling a motif into mirrored quadrants read as
+  # dense/ornate in every real generation regardless of requested density -
+  # same structural problem as honeycomb among elements. "branching" (organic,
+  # non-repeating) replaces it. Rotational/tiled/four-way *symmetry* is still
+  # allowed but capped low (MAX_TILING_FRACTION in planner.py) rather than
+  # removed, since it can work in moderation.
+  - organic_all_over
+  - interlocking
+  - flowing_diagonal
+  - branching
+  - nested
+  - alternating_bands
+  - overlapping
+  - asymmetric_repeating
+  - geometric_lattice
+  - clustered
+
+constraints:
+  - no text
+  - no numbers
+  - no people
+  - no shading
+  - no gray
+  - no color
+  - no gradients
+  - no solid black areas
+  - no traditional mandala
+  - no single central object
+  - no concentric rings
+  - no generic clip art
+
+production:
+  dpi: 300
+  border: true
+  target_width_inches: 8.5
+  target_height_inches: 11
+
+ordering:
+  avoid_adjacent_same_element: true
+  avoid_adjacent_same_composition: true
+  target_density_variation: true
+
+diversity:
+  max_same_element_consecutive: 1
+  max_same_composition_consecutive: 1
+  max_same_element_count: 4
+  max_same_composition_count: 6
+  max_duplicate_combination_count: 1
+  candidates_per_page: 3
+  duplicate_phash_threshold: 10
+
+front_matter:
+  pages:
+    - title_page
+    - copyright_page
+    - belongs_to_page
+
+back_matter:
+  pages: []

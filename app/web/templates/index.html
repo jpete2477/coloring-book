@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Book Factory{% endblock %}
+{% block content %}
+<h1>Books</h1>
+{% if book_ids %}
+<ul class="book-list">
+  {% for id in book_ids %}
+  <li><a href="/{{ id }}">{{ id }}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty-state">No books yet. Run <code>bookfactory init &lt;book_id&gt;</code> from the CLI.</p>
+{% endif %}
+{% endblock %}

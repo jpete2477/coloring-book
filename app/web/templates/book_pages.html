@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ book_id }} — Book Order{% endblock %}
+{% block header_extra %}<a href="/{{ book_id }}">{{ book_id }}</a>{% endblock %}
+{% block content %}
+<h1>Book order</h1>
+<p>{{ pages|length }} approved page(s), in current order. Edit the numbers and save to set a manual order —
+   <code>bookfactory build</code> will use this instead of auto-ordering.
+   {% if interior_pdf_exists %}<a href="/media/{{ book_id }}/interior/interior.pdf" target="_blank">Open the last built interior.pdf →</a>{% endif %}
+</p>
+
+{% if not pages %}
+<p class="empty-state">No approved pages yet. Approve some in the review queue first.</p>
+{% else %}
+<form method="post" action="/{{ book_id }}/api/pages/reorder">
+  <div class="page-grid">
+    {% for p in pages %}
+    <div class="page-card">
+      <div class="page-card-thumb">
+        {% if p.thumbnail_url %}
+        <img src="{{ p.thumbnail_url }}" alt="{{ p.asset_id }}" class="page-thumb-clickable"
+             data-full-src="{{ p.full_image_url }}" data-caption="{{ p.asset_id }} — {{ p.element }} / {{ p.composition }}">
+        {% endif %}
+      </div>
+      <input type="number" name="seq_{{ p.asset_id }}" value="{{ p.sequence }}" min="1" class="page-seq-input">
+      <div class="page-card-label">{{ p.asset_id }}<br><small>{{ p.element }} / {{ p.composition }}</small></div>
+      <button type="submit" class="reject page-remove-btn"
+              formaction="/{{ book_id }}/api/assets/{{ p.asset_id }}/remove-from-book" formmethod="post"
+              formnovalidate
+              onclick="return confirm('Remove {{ p.asset_id }} from the book? This rejects it - you can re-approve it later from the review queue if you change your mind.')">
+        Remove
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="actions">
+    <button type="submit" class="approve">Save order</button>
+  </div>
+</form>
+{% endif %}
+
+<div id="lightbox" class="lightbox" hidden>
+  <img id="lightbox-img" src="" alt="">
+  <div id="lightbox-caption" class="lightbox-caption"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/lightbox.js"></script>
+{% endblock %}

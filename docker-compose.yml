@@ -1,0 +1,11 @@
+# Not load-bearing for local development (`uv run bookfactory ...` is the
+# normal path) — this just packages the review UI per PRD section 67.
+services:
+  review-ui:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./books:/app/books
+    env_file:
+      - .env.example
